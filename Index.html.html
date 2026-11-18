@@ -1,0 +1,236 @@
+<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#111017"><meta name="apple-mobile-web-app-capable" content="yes"><title>Klippe · Hårdrocksradio</title><style>
+:root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:#111017;color:#f9f5ef}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#453145 0%,#18141e 45%,#111017 75%);min-height:100vh}.wrap{max-width:580px;margin:auto;padding:calc(22px + env(safe-area-inset-top)) 19px calc(30px + env(safe-area-inset-bottom))}header{display:flex;align-items:center;justify-content:space-between;gap:10px}.eyebrow{color:#daa99a;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:700}.logo{font-size:32px;font-weight:900;letter-spacing:-1.8px;margin:4px 0 0}.tag{color:#c7baca;font-size:13px;margin:4px 0}.mark{font-size:37px;background:#342634;border:1px solid #684354;border-radius:22px;padding:10px}.hero{margin-top:24px;border:1px solid #53404d;background:linear-gradient(145deg,#352833,#1a1920);border-radius:26px;padding:23px;box-shadow:0 15px 40px #0003}.number{font-weight:700;color:#efa578;font-size:12px;letter-spacing:1px}.song{font-size:30px;line-height:1.1;margin:12px 0 6px;letter-spacing:-.6px}.artist{color:#eee0d3;font-size:17px}.album{color:#ada0ad;font-size:12px;margin-top:7px}.progress{height:5px;background:#55434b;border-radius:10px;overflow:hidden;margin:24px 0 12px}.bar{background:linear-gradient(90deg,#fb9c61,#f36987);height:100%;width:0;transition:width .25s}.status{color:#c1b2bd;font-size:12px;min-height:17px}.intro{margin:20px 0 15px;color:#eee8e4;font-size:16px;line-height:1.58}.btn{border:0;cursor:pointer;border-radius:15px;background:#f7a671;color:#241418;font-size:15px;font-weight:750;padding:15px 14px;min-height:48px}.btn:disabled{opacity:.4}.btn.secondary{background:#302a35;border:1px solid #544653;color:#f6e8e4}.btn.ghost{background:transparent;color:#eccfc1;border:1px solid #5f4855}.buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px}.buttons .full{grid-column:span 2}.section{margin-top:26px}.section h2{font-size:17px;margin:0 0 13px}.songitem{padding:12px 10px;display:flex;gap:13px;border-bottom:1px solid #342d36;align-items:center;cursor:pointer}.songitem.selected{background:#30242f;border-radius:13px;border-color:transparent}.count{width:24px;color:#d5a392;text-align:center;font-variant-numeric:tabular-nums}.itemname{font-weight:650;font-size:14px}.itemalbum{font-size:12px;color:#ada1ac;margin-top:4px}.expander{background:#211e27;padding:16px;border:1px solid #403640;border-radius:18px;margin-top:17px}summary{font-weight:700;cursor:pointer}.subtle{color:#b2a6b0;font-size:12px;line-height:1.5}.input{background:#130f17;border:1px solid #675564;border-radius:10px;color:white;padding:12px;width:100%;font-size:15px}.controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.mini{padding:10px 14px;min-height:40px;font-size:13px}.pill{font-size:11px;color:#ffd8b8;border:1px solid #6c4c4e;padding:6px 9px;border-radius:20px}label{font-size:12px;color:#dfd1da;display:block;margin:12px 0 5px}footer{margin-top:22px;color:#968895;font-size:12px;text-align:center}a{color:#ffbc8d}select{appearance:auto} .no{display:none!important}
+</style></head><body><main class="wrap"><header><div><div class="eyebrow">Din personliga AI-radio · prototyp 1</div><h1 class="logo">KLIPPE <span style="color:#f49874">FM</span></h1><p class="tag">24 godbitar. 6 band. En lätt pratglad DJ.</p></div><div class="mark">🎙️</div></header>
+<div class="hero"><div class="number" id="counter">LÅT 01 / 24</div><h2 class="song" id="title">Hells Bells</h2><div class="artist" id="artist">AC/DC</div><div class="album" id="album">Back in Black</div><div class="progress"><div class="bar" id="bar"></div></div><div class="status" id="status" role="status" aria-live="polite">Redo att börja.</div><p class="intro" id="intro"></p><div class="buttons"><button class="btn full" id="speak">🎙️ Klippe presenterar</button><button class="btn secondary" id="open">♫ Öppna i Apple Music</button><button class="btn secondary" id="next">Nästa låt →</button><button class="btn ghost" id="prev">← Föregående</button><button class="btn ghost" id="stop">■ Stoppa rösten</button></div></div>
+<details class="expander"><summary>⚙️ Ljud och röst</summary><p class="subtle">Rösten är i prototypen telefonens inbyggda talsyntes. Det är inte ChatGPT:s naturliga röst. Första uppläsningen måste startas genom ett tryck i Safari. Om Safari är tyst, testa annan svensk röst eller använd Klippes textmanus.</p><label for="voice">Svensk röst</label><select id="voice" class="input"><option value="">Telefonens standardröst</option></select><label for="speed">Talhastighet <span id="speedLabel">0,95</span></label><input id="speed" style="width:100%" type="range" min="0.75" max="1.2" value="0.95" step="0.05"></details>
+<details class="expander"><summary>🎵 Experimentell Apple Music-koppling</summary><p class="subtle">För uppspelning inne i webbsidan behövs ett Apple Music-abonnemang och en giltig MusicKit-utvecklartoken från ett Apple Developer-konto. Lämna tomt tills vi byggt en säker serverlösning. Klistra aldrig in en privat Apple-nyckel (.p8). Token sparas inte av appen.</p><label for="token">MusicKit JWT-utvecklartoken</label><input id="token" class="input" type="password" placeholder="Endast en kortlivad signerad JWT" autocomplete="off"><div class="controls"><button class="btn mini" id="connect">Anslut MusicKit</button><button class="btn secondary mini" id="playMusic">▶ Spela valt spår</button><button class="btn secondary mini" id="pauseMusic">Ⅱ Pausa</button></div><p class="subtle" id="musicStatus">Ej ansluten. Spelaren påverkar inte vanliga Apple Music-appen.</p><p class="subtle">Observera: automatisk övergång till nästa pratinslag kan begränsas av Safari och av MusicKit:s uppspelningshändelser. Det här läget är en testfunktion, inte en färdig automatisk radio.</p></details>
+<section class="section"><h2>📻 Låtordning</h2><div id="playlist"></div></section><footer>KLIPPE FM · Visar bara lagliga Apple Music-länkar · Inget ljud eller musik lagras på webbplatsen.</footer></main>
+<script id="songdata" type="application/json">[
+  {
+    "artist": "AC/DC",
+    "title": "Hells Bells",
+    "album": "Back in Black",
+    "id": "574050495",
+    "url": "https://music.apple.com/se/album/hells-bells/574050396?i=574050495",
+    "albumLink": false,
+    "intro": "Hallå där, alla hårdrocksvänner! Klippe här, och vi öppnar med kyrkklockor som knappast kallar till stilla andakt. AC/DC – Hells Bells!"
+  },
+  {
+    "artist": "Judas Priest",
+    "title": "Electric Eye",
+    "album": "Screaming for Vengeance",
+    "id": "207178158",
+    "url": "https://music.apple.com/se/album/screaming-for-vengeance-expanded-edition/581748550",
+    "albumLink": true,
+    "intro": "Från Australiens högspänning till brittisk metallövervakning. Judas Priest håller ett öga på oss med Electric Eye. Själv har jag fullt upp med volymratten."
+  },
+  {
+    "artist": "Iron Maiden",
+    "title": "Aces High",
+    "album": "Powerslave",
+    "id": "980112278",
+    "url": "https://music.apple.com/se/album/aces-high/980112277?i=980112278",
+    "albumLink": false,
+    "intro": "Nu lyfter vi! Iron Maiden tar oss rakt upp i luftstriden med Aces High. Spänn fast säkerhetsbältet, för den här flygresan saknar bromspedal."
+  },
+  {
+    "artist": "Dio",
+    "title": "Holy Diver",
+    "album": "Holy Diver",
+    "id": "1442912745",
+    "url": "https://music.apple.com/se/album/holy-diver/1442912522?i=1442912745",
+    "albumLink": false,
+    "intro": "Ronnie James Dio kunde få det mest fantastiska att låta fullständigt självklart. Här kommer Holy Diver. Jag har fortfarande inte förstått vart vi ska dyka, men jag följer gärna med."
+  },
+  {
+    "artist": "Rainbow",
+    "title": "Kill the King",
+    "album": "Long Live Rock ’n’ Roll",
+    "id": "1440785533",
+    "url": "https://music.apple.com/se/album/long-live-rock-n-roll-deluxe-edition/1440784871",
+    "albumLink": true,
+    "intro": "Nu får Ritchie Blackmore och Ronnie James Dio sällskap av Cozy Powells våldsamma trumspel. Rainbow levererar Kill the King. Kungligt ös, minst sagt."
+  },
+  {
+    "artist": "Accept",
+    "title": "Fast as a Shark",
+    "album": "Restless and Wild",
+    "id": "1443152102",
+    "url": "https://music.apple.com/se/album/fast-as-a-shark/1443152098?i=1443152102",
+    "albumLink": false,
+    "intro": "Nu blir det tyskt precisionsarbete, fast med gaspedalen i botten. Accept och Fast as a Shark! Här gäller det att hålla i sig, även utan fenor."
+  },
+  {
+    "artist": "AC/DC",
+    "title": "Riff Raff",
+    "album": "Powerage",
+    "id": "574050389",
+    "url": "https://music.apple.com/se/album/powerage/574050248",
+    "albumLink": true,
+    "intro": "Tillbaka till Bon Scott-erans AC/DC och albumet Powerage. Riff Raff är ett gitarrfyrverkeri som gör att man misstänker att Angus Young hade ett eget kraftverk."
+  },
+  {
+    "artist": "Rainbow",
+    "title": "Stargazer",
+    "album": "Rising",
+    "id": "1440922977",
+    "url": "https://music.apple.com/se/album/stargazer/1440922798?i=1440922977",
+    "albumLink": false,
+    "intro": "Vi sänker tempot en aning men höjer ambitionsnivån rejält. Rainbow och Stargazer – en episk resa där Blackmores gitarr och Dios röst får ordentligt med utrymme."
+  },
+  {
+    "artist": "Judas Priest",
+    "title": "The Sentinel",
+    "album": "Defenders of the Faith",
+    "id": "207178308",
+    "url": "https://music.apple.com/se/album/defenders-of-the-faith-bonus-track-version/207178131",
+    "albumLink": true,
+    "intro": "Nu kommer en av Judas Priests riktigt vassa albumklassiker. The Sentinel från Defenders of the Faith. Gitarrerna är så välvässade att de borde levereras med skyddsfodral."
+  },
+  {
+    "artist": "Accept",
+    "title": "Metal Heart",
+    "album": "Metal Heart",
+    "id": "1787140286",
+    "url": "https://music.apple.com/se/album/metal-heart/1787140285?i=1787140286",
+    "albumLink": false,
+    "intro": "Accept har mer än råstyrka i verktygslådan. Här är Metal Heart, där klassiska influenser får möta tysk heavy metal. Mitt eget hjärta är fortfarande mest kött och blod, tyvärr."
+  },
+  {
+    "artist": "Iron Maiden",
+    "title": "Revelations",
+    "album": "Piece of Mind",
+    "id": "979937573",
+    "url": "https://music.apple.com/se/album/revelations/979936834?i=979937573",
+    "albumLink": false,
+    "intro": "Iron Maiden kan bygga musikaliska världar som få andra band. Här är Bruce Dickinsons Revelations från Piece of Mind. Låt den få ta sin tid."
+  },
+  {
+    "artist": "Dio",
+    "title": "Don’t Talk to Strangers",
+    "album": "Holy Diver",
+    "id": "1440757614",
+    "url": "https://music.apple.com/se/album/dont-talk-to-strangers/1440757603?i=1440757614",
+    "albumLink": false,
+    "intro": "Nu kommer Dio med ett vänligt men ganska mörkt råd: Don’t Talk to Strangers. Vilket är lite besvärligt för mig som lever på att prata med folk jag inte känner."
+  },
+  {
+    "artist": "Rainbow",
+    "title": "Gates of Babylon",
+    "album": "Long Live Rock ’n’ Roll",
+    "id": "1458823318",
+    "url": "https://music.apple.com/se/album/gates-of-babylon/1458823217?i=1458823318",
+    "albumLink": false,
+    "intro": "Dags att öppna portarna till Babylon. Rainbow förenar orientaliskt färgade tongångar med Blackmores gitarrmagi. Det här är hårdrock med en storslagen utsikt."
+  },
+  {
+    "artist": "AC/DC",
+    "title": "Shoot to Thrill",
+    "album": "Back in Black",
+    "id": "574050498",
+    "url": "https://music.apple.com/se/album/back-in-black/574050396",
+    "albumLink": true,
+    "intro": "Nu behöver vi lite okomplicerad australisk elektricitet igen. Shoot to Thrill från Back in Black! Ett riff, ett sväng och sedan är saken i stort sett avgjord."
+  },
+  {
+    "artist": "Accept",
+    "title": "Princess of the Dawn",
+    "album": "Restless and Wild",
+    "id": "1443152308",
+    "url": "https://music.apple.com/se/album/princess-of-the-dawn/1443152098?i=1443152308",
+    "albumLink": false,
+    "intro": "Accept får dra ner hastigheten och höja mystiken. Princess of the Dawn är tung, suggestiv och nästan hypnotisk. Här behöver man inte springa fort för att komma långt."
+  },
+  {
+    "artist": "Judas Priest",
+    "title": "Beyond the Realms of Death",
+    "album": "Stained Class",
+    "id": "207346409",
+    "url": "https://music.apple.com/se/album/stained-class-bonus-track-version/207346308",
+    "albumLink": true,
+    "intro": "Judas Priest visar nu sin mer dramatiska sida. Beyond the Realms of Death från Stained Class börjar eftertänksamt och växer till något alldeles oerhört."
+  },
+  {
+    "artist": "Dio",
+    "title": "The Last in Line",
+    "album": "The Last in Line",
+    "id": "1443276902",
+    "url": "https://music.apple.com/se/album/the-last-in-line/1443276888?i=1443276902",
+    "albumLink": false,
+    "intro": "Ronnie James Dio är tillbaka med The Last in Line. En stillsam öppning, och sedan öppnar sig hela metalhimlen. Jag skulle gärna stå först i kön, men det passar inte riktigt titeln."
+  },
+  {
+    "artist": "Iron Maiden",
+    "title": "2 Minutes to Midnight",
+    "album": "Powerslave",
+    "id": "980112282",
+    "url": "https://music.apple.com/se/album/2-minutes-to-midnight/980112277?i=980112282",
+    "albumLink": false,
+    "intro": "Vi återvänder till Iron Maidens Powerslave. Två minuter till midnatt är knappast någon lugnande tidsangivelse, men som hårdrock fungerar den utmärkt. Här är 2 Minutes to Midnight!"
+  },
+  {
+    "artist": "AC/DC",
+    "title": "Whole Lotta Rosie",
+    "album": "Let There Be Rock",
+    "id": "574124731",
+    "url": "https://music.apple.com/se/album/let-there-be-rock/574124483",
+    "albumLink": true,
+    "intro": "Nu kommer Bon Scott, Angus Young och en låt som knappast behöver någon längre presentation. Whole Lotta Rosie! Vi kan väl säga att det är mycket av det mesta."
+  },
+  {
+    "artist": "Accept",
+    "title": "Balls to the Wall",
+    "album": "Balls to the Wall",
+    "id": "1787140532",
+    "url": "https://music.apple.com/se/album/balls-to-the-wall/1787140530?i=1787140532",
+    "albumLink": false,
+    "intro": "Nu är det dags för Accept att ta i från tårna. Balls to the Wall har ett riff som nästan skulle kunna flytta möbler. Eller åtminstone skaka loss dem från väggen."
+  },
+  {
+    "artist": "Rainbow",
+    "title": "Man on the Silver Mountain",
+    "album": "Ritchie Blackmore’s Rainbow",
+    "id": "1440924610",
+    "url": "https://music.apple.com/se/album/man-on-the-silver-mountain/1440924592?i=1440924610",
+    "albumLink": false,
+    "intro": "Vi går tillbaka till Rainbows första album och kombinationen av Blackmore och Dio. Man on the Silver Mountain. Bergfast hårdrock, helt utan krav på klätterutrustning."
+  },
+  {
+    "artist": "Judas Priest",
+    "title": "Painkiller",
+    "album": "Painkiller",
+    "id": "207178166",
+    "url": "https://music.apple.com/se/album/painkiller/207178142?i=207178166",
+    "albumLink": false,
+    "intro": "Nu är det dags att pröva högtalarnas hållfasthet. Judas Priest och Painkiller! Scott Travis öppnar med ett trumangrepp som inte lämnar mycket utrymme för småprat."
+  },
+  {
+    "artist": "Dio",
+    "title": "Rainbow in the Dark",
+    "album": "Holy Diver",
+    "id": "1442912765",
+    "url": "https://music.apple.com/se/album/rainbow-in-the-dark/1442912522?i=1442912765",
+    "albumLink": false,
+    "intro": "Efter den urladdningen behöver vi något melodiskt, men absolut inte mesigt. Dio och Rainbow in the Dark. Ett keyboardtema som fastnar och en röst som aldrig släpper taget."
+  },
+  {
+    "artist": "Iron Maiden",
+    "title": "Hallowed Be Thy Name",
+    "album": "The Number of the Beast",
+    "id": "979954064",
+    "url": "https://music.apple.com/se/album/hallowed-be-thy-name/979953728?i=979954064",
+    "albumLink": false,
+    "intro": "Mina vänner, nu har vi nått kvällens sista låt. Iron Maidens Hallowed Be Thy Name får avsluta med ett mäktigt drama. Klippe tackar för sällskapet – tystnad är bara pausen före nästa riff."
+  }
+]</script><script>
+'use strict';const songs=JSON.parse(document.getElementById('songdata').textContent);const $=id=>document.getElementById(id);let position=0,voices=[],music=null,ready=false;const saved=Number(sessionStorage.getItem('klippe.position'));if(Number.isInteger(saved)&&saved>=0&&saved<songs.length)position=saved;
+function status(s){$('status').textContent=s}function render(){let s=songs[position];$('counter').textContent=`LÅT ${String(position+1).padStart(2,'0')} / ${songs.length}`;$('title').textContent=s.title;$('artist').textContent=s.artist;$('album').textContent=s.album;$('intro').textContent=s.intro;$('bar').style.width=((position+1)/songs.length*100)+'%';$('prev').disabled=position===0;$('next').disabled=position===songs.length-1;$('open').textContent=s.albumLink?'♫ Öppna album i Apple Music':'♫ Öppna i Apple Music';$('playlist').innerHTML='';songs.forEach((t,i)=>{let r=document.createElement('div');r.className='songitem'+(i===position?' selected':'');r.innerHTML=`<span class="count">${String(i+1).padStart(2,'0')}</span><span><div class="itemname"></div><div class="itemalbum"></div></span>`;r.querySelector('.itemname').textContent=t.artist+' – '+t.title;r.querySelector('.itemalbum').textContent=t.album;r.addEventListener('click',()=>move(i));$('playlist').appendChild(r)});sessionStorage.setItem('klippe.position',position)}
+function halt(){if('speechSynthesis'in window)window.speechSynthesis.cancel()}function move(i){halt();position=Math.max(0,Math.min(songs.length-1,i));render();status('Redo för låt '+(position+1)+'.')}
+function getVoices(){if(!('speechSynthesis'in window))return;voices=window.speechSynthesis.getVoices().filter(v=>v.lang.toLowerCase().startsWith('sv'));const old=$('voice').value;$('voice').innerHTML='<option value="">Telefonens standardröst</option>';voices.forEach(v=>{let o=document.createElement('option');o.value=v.name;o.textContent=v.name+' ('+v.lang+')';$('voice').appendChild(o)});if(voices.some(v=>v.name===old))$('voice').value=old}
+function speak(){if(!('speechSynthesis'in window)){status('Den här webbläsaren saknar talsyntes.');return}halt();const u=new SpeechSynthesisUtterance(songs[position].intro);u.lang='sv-SE';u.rate=Number($('speed').value);const v=voices.find(v=>v.name===$('voice').value);if(v)u.voice=v;u.onstart=()=>status('🎙️ Klippe pratar…');u.onend=()=>status('Presentationen är klar. Spela låten eller gå vidare.');u.onerror=e=>status('Uppläsningen misslyckades ('+e.error+'). Testa en annan röst.');window.speechSynthesis.speak(u);status('Startar uppläsningen…')}
+$('speak').addEventListener('click',speak);$('stop').addEventListener('click',()=>{halt();status('Rösten stoppad.')});$('next').addEventListener('click',()=>move(position+1));$('prev').addEventListener('click',()=>move(position-1));$('open').addEventListener('click',()=>window.open(songs[position].url,'_blank','noopener,noreferrer'));$('speed').addEventListener('input',()=>{$('speedLabel').textContent=Number($('speed').value).toFixed(2).replace('.',',')});getVoices();if('speechSynthesis'in window)window.speechSynthesis.onvoiceschanged=getVoices;render();
+async function loadKit(){if(window.MusicKit)return;await new Promise((resolve,reject)=>{let script=document.createElement('script');script.src='https://js-cdn.music.apple.com/musickit/v3/musickit.js';script.onload=resolve;script.onerror=()=>reject(Error('MusicKit kunde inte laddas'));document.head.appendChild(script)})}
+$('connect').addEventListener('click',async()=>{const token=$('token').value.trim();if(!token){$('musicStatus').textContent='En giltig utvecklartoken krävs.';return}try{$('musicStatus').textContent='Ansluter till Apple Music…';await loadKit();await MusicKit.configure({developerToken:token,app:{name:'Klippe FM',build:'0.1'}});music=MusicKit.getInstance();await music.authorize();ready=true;$('token').value='';$('musicStatus').textContent='Ansluten! Testa ▶ Spela valt spår.'}catch(e){ready=false;$('musicStatus').textContent='Anslutningen misslyckades: '+e.message}});
+$('playMusic').addEventListener('click',async()=>{if(!ready||!music){$('musicStatus').textContent='Anslut MusicKit först.';return}try{halt();$('musicStatus').textContent='Laddar låten…';await music.setQueue({song:songs[position].id});await music.play();$('musicStatus').textContent='Spelar: '+songs[position].title}catch(e){$('musicStatus').textContent='Kunde inte spela: '+e.message}});
+$('pauseMusic').addEventListener('click',async()=>{if(music)try{await music.pause();$('musicStatus').textContent='Pausad.'}catch(e){$('musicStatus').textContent=e.message}});
+</script></body></html>
